@@ -2,6 +2,8 @@ from os.path import join
 from random import randint, uniform
 import pygame
 
+SCORES_FILE = './scores.txt'
+
 # classes
 class Shooter(pygame.sprite.Sprite):
     def __init__(self, groups):
@@ -20,8 +22,8 @@ class Shooter(pygame.sprite.Sprite):
 
     def laser_timer(self):
         if not self.can_shoot:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.laser_shoot_time >= self.cooldown:
+            curr_time = pygame.time.get_ticks()
+            if curr_time - self.laser_shoot_time >= self.cooldown:
                 self.can_shoot = True
 
     def update(self, delta_t):
@@ -56,7 +58,7 @@ class Star(pygame.sprite.Sprite):
         self.pos = [randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)]
         self.rect = self.image.get_frect(center=(self.pos[0], self.pos[1]))
 
-class Meteor(pygame.sprite.Sprite):
+class Starfighter(pygame.sprite.Sprite):
     def __init__(self, groups, surf, speed_multiplier=1):
         super().__init__(groups)
         self.image = surf
@@ -102,14 +104,14 @@ class AnimatedExplosion(pygame.sprite.Sprite):
 # functions
 def collisions():
     global running
-    collision_sprites = pygame.sprite.spritecollide(shooter, meteor_sprites, False, pygame.sprite.collide_mask)
+    collision_sprites = pygame.sprite.spritecollide(shooter, starfighter_sprites, False, pygame.sprite.collide_mask)
     if collision_sprites:
         print("YOU LOSE!")
         running = False
 
 
     for laser in laser_sprites:
-        collided_sprites = pygame.sprite.spritecollide(laser, meteor_sprites, True, pygame.sprite.collide_mask)
+        collided_sprites = pygame.sprite.spritecollide(laser, starfighter_sprites, True, pygame.sprite.collide_mask)
         if collided_sprites:
             laser.kill()
             AnimatedExplosion(explosion_frames, laser.rect.midtop, all_sprites)
@@ -124,6 +126,11 @@ def display_score():
     text_rect = text_surf.get_frect(midbottom=(WINDOW_WIDTH / 2, WINDOW_HEIGHT - 50))
     screen.blit(text_surf, text_rect)
     pygame.draw.rect(screen, (240, 240, 240), text_rect.inflate(20, 20).move(0, -8), 5, 10)
+    return f'{minutes:02}:{seconds:02}'
+
+def save_score(score_to_save):
+    with open(SCORES_FILE, 'a') as file:
+        file.write(f'{score_to_save}\n')
 
 
 # pygame setup
@@ -137,8 +144,8 @@ clock = pygame.time.Clock()
 # import images
 star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
 star_surf = pygame.transform.scale(star_surf, (500, 500))
-meteor_surf = pygame.image.load(join('images', 'starfighter.png')).convert_alpha()
-meteor_surf = pygame.transform.scale(meteor_surf, (150, 150))
+starfighter_surf = pygame.image.load(join('images', 'starfighter.png')).convert_alpha()
+starfighter_surf = pygame.transform.scale(starfighter_surf, (150, 150))
 laser_surf = pygame.image.load(join('images', 'laser.png')).convert_alpha()
 font = pygame.font.Font(join('images', 'Oxanium-Bold.ttf'), 30)
 explosion_frames = [pygame.image.load(join('images', 'explosion', f'{i}.png')).convert_alpha() for i in range(21)]
@@ -155,37 +162,41 @@ game_music.play()
 all_sprites = pygame.sprite.Group()
 for i in range(20):
     star = Star(all_sprites, star_surf)
-meteor_sprites = pygame.sprite.Group()
+starfighter_sprites = pygame.sprite.Group()
 laser_sprites = pygame.sprite.Group()
 shooter = Shooter(all_sprites)
 
-meteor_event = pygame.event.custom_type()
-pygame.time.set_timer(meteor_event, 300)
+starfighter_event = pygame.event.custom_type()
+pygame.time.set_timer(starfighter_event, 300)
 
-meteor_speed_multiplier = 1
+starfighter_speed_multiplier = 1
 increase_speed_time = 30000
 last_speed_increase = pygame.time.get_ticks()
+
+score = 0
 while running:
     dt = clock.tick() / 1000
     current_time = pygame.time.get_ticks()
 
     if current_time - last_speed_increase >= increase_speed_time:
-        meteor_speed_multiplier += 0.1
+        starfighter_speed_multiplier += 0.1
         last_speed_increase = current_time
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == meteor_event:
-            Meteor((all_sprites, meteor_sprites), meteor_surf, meteor_speed_multiplier)
+        if event.type == starfighter_event:
+            Starfighter((all_sprites, starfighter_sprites), starfighter_surf, starfighter_speed_multiplier)
 
     screen.fill('#010210')
 
     all_sprites.update(dt)
     collisions()
-    display_score()
+    score = display_score()
     all_sprites.draw(screen)
 
     pygame.display.update()
 
+
+save_score(score)
 pygame.quit()
