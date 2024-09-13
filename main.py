@@ -6,7 +6,8 @@ import pygame
 class Shooter(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
-        self.image = pygame.image.load(join('images', 'player.png')).convert_alpha()
+        self.image = pygame.image.load(join('images', 'millennium-falcon.png')).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (110, 140))
         self.rect = self.image.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.speed = 300
         self.dir = pygame.math.Vector2()
@@ -135,7 +136,9 @@ clock = pygame.time.Clock()
 
 # import images
 star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
-meteor_surf = pygame.image.load(join('images', 'meteor.png')).convert_alpha()
+star_surf = pygame.transform.scale(star_surf, (500, 500))
+meteor_surf = pygame.image.load(join('images', 'starfighter.png')).convert_alpha()
+meteor_surf = pygame.transform.scale(meteor_surf, (150, 150))
 laser_surf = pygame.image.load(join('images', 'laser.png')).convert_alpha()
 font = pygame.font.Font(join('images', 'Oxanium-Bold.ttf'), 30)
 explosion_frames = [pygame.image.load(join('images', 'explosion', f'{i}.png')).convert_alpha() for i in range(21)]
@@ -176,7 +179,7 @@ while running:
         if event.type == meteor_event:
             Meteor((all_sprites, meteor_sprites), meteor_surf, meteor_speed_multiplier)
 
-    screen.fill('#020218')
+    screen.fill('#010210')
 
     all_sprites.update(dt)
     collisions()
