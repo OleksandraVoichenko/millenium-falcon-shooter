@@ -1,27 +1,26 @@
-**Millennium Falcon: Grand Escape**
-![image](https://github.com/user-attachments/assets/950875dc-2fb9-4447-b18e-48dc611a3428)
+**Millennium Falcon: Grand Escape** 🏆
 
 
 
-**Introduction**
+📖 **Introduction**
 
 Welcome to Millennium Falcon: Grand Escape, an exciting 2D arcade shooter game where you take control of the legendary Millennium Falcon as it makes its daring escape through the galaxy. This game challenges your reflexes, precision, and ability to fend off relentless starfighters while avoiding collisions. The longer you survive, the higher your score will be!
 
 
 
-**Project Inspiration**
+✨ **Project Inspiration**
 
 As a longtime fan of the Star Wars universe, I wanted to create an engaging and fun project that reflects my love for the iconic series. The Millennium Falcon has always been a symbol of fast-paced space adventures, and I aimed to capture that energy in a game. From laser battles to explosive animations, this game is a tribute to one of the greatest spaceships ever seen on screen.
 
 
 
-**Game Name**
+🎮 **Game Name**
 
 Millennium Falcon: Grand Escape
 
 
 
-**How to Play**
+❓ **How to Play**
 
 1. Move the Millennium Falcon using the arrow keys.
 2. Shoot lasers by pressing the spacebar to destroy incoming starfighters.
@@ -31,7 +30,7 @@ Millennium Falcon: Grand Escape
 
 
    
-**Technologies Used**
+⚙️ **Technologies Used**
 
 This game was developed using:
 
@@ -42,7 +41,7 @@ This game was developed using:
 
 
 
-**Features**
+💡 **Features**
 
 - Classic Starfighter Combat: Move the Millennium Falcon and fire lasers to destroy enemy starfighters.
 - Explosions & Visual Effects: Includes animated explosions and sound effects to heighten the experience.
