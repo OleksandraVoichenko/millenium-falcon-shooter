@@ -2,6 +2,8 @@ from os.path import join
 from random import randint, uniform
 import pygame
 
+from Scoreboard import Scoreboard
+
 # constants
 SCORES_FILE = './scores.txt'
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
@@ -27,12 +29,14 @@ enemy_surf = pygame.transform.scale(pygame.image.load(join('images', 'starfighte
 laser_surf = pygame.image.load(join('images', 'laser.png')).convert_alpha()
 
 explosion_frames = [pygame.image.load(join('images', 'explosion', f'{i}.png')).convert_alpha() for i in range(21)]
-explosion_sound = pygame.mixer.Sound(join('audio', 'explosion.wav'))
+explosion_sound = pygame.mixer.Sound(join('audio', 'flying.wav'))
 font = pygame.font.Font(join('images', 'Oxanium-Bold.ttf'), 30)
-game_music = pygame.mixer.Sound(join('audio', 'game_music.wav'))
-laser_sound = pygame.mixer.Sound(join('audio', 'laser.wav'))
+game_music = pygame.mixer.Sound(join('audio', 'star-wars.mp3'))
+game_over_sound = pygame.mixer.Sound(join('audio', 'chewy.wav'))
+laser_sound = pygame.mixer.Sound(join('audio', 'rifle.wav'))
+score_board_sound = pygame.mixer.Sound(join('audio', 'vader.wav'))
 game_music.set_volume(0.5)
-game_music.play()
+game_music.play(loops=-1)
 
 
 # sprite classes
@@ -150,6 +154,8 @@ def collisions():
     global running, game_over
     falcon_col_sprites = pygame.sprite.spritecollide(falcon, enemy_sprites, False, pygame.sprite.collide_mask)
     if falcon_col_sprites:
+        game_music.stop()
+        game_over_sound.play()
         save_score(score)
         game_over = True
 
@@ -200,7 +206,12 @@ def draw_buttons():
     screen.blit(quit_b_surf, quit_b_rect)
     pygame.draw.rect(screen, TEXT_COLOR, quit_b_rect.inflate(20, 20).move(0, -8), 5, 10)
 
-    return restart_b_rect, quit_b_rect
+    scoreboard_b_surf = font.render('SCOREBOARD', True, TEXT_COLOR)
+    scoreboard_b_rect = scoreboard_b_surf.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT - 150))
+    screen.blit(scoreboard_b_surf, scoreboard_b_rect)
+    pygame.draw.rect(screen, TEXT_COLOR, scoreboard_b_rect.inflate(20, 20).move(0, -8), 5, 10)
+
+    return restart_b_rect, quit_b_rect, scoreboard_b_rect
 
 
 def restart_game():
@@ -217,12 +228,36 @@ def restart_game():
         sprite.kill()
     for sprite in laser_sprites:
         sprite.kill()
+    game_music.play()
+
+
+def scoreboard_screen():
+    """Creates score board and tracks clicks"""
+    scoreboard = Scoreboard()
+    running_scoreboard = True
+    score_board_sound.play(loops=-1)
+    while running_scoreboard:
+        for score_event in pygame.event.get():
+            if score_event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        screen.fill(BACKGROUND_COLOR)
+        back_button_rect = scoreboard.draw_scoreboard(screen, font)
+
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = pygame.mouse.get_pressed()
+        if back_button_rect.collidepoint(mouse_pos) and mouse_click[0]:
+            score_board_sound.stop()
+            running_scoreboard = False
+
+        pygame.display.flip()
 
 
 def game_over_screen():
     """Shows game over screen with buttons and detects clicks"""
     screen.fill(BACKGROUND_COLOR)
-    restart_b_rect, quit_b_rect = draw_buttons()
+    restart_b_rect, quit_b_rect, scoreboard_b_rect = draw_buttons()
     pygame.display.update()
 
     while True:
@@ -238,6 +273,9 @@ def game_over_screen():
                 if quit_b_rect.collidepoint(mouse_pos):
                     pygame.quit()
                     exit()
+                if scoreboard_b_rect.collidepoint(mouse_pos):
+                    scoreboard_screen()
+                    return
 
 
 # add sprites
@@ -259,6 +297,7 @@ enemy_speed_level = 1
 
 # main loop
 score = 0
+scoreboard = Scoreboard()
 while running:
     dt = clock.tick() / 1000
     played_time = pygame.time.get_ticks()
