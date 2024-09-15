@@ -1,1 +1,4 @@
 14.09.2024 - Added a restart menu after player crashes into a strafighter.
+
+15.09.2024 - Added a scoreboard with "Leader score" (max score from all of the previous games) and list of 10 last played games. 
+Also, added custom "Star Wars" sound effects to the game (while playing, shooting, losing game, and checking scoreboard).
