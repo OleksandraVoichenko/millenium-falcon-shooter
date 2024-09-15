@@ -52,12 +52,14 @@ class Scoreboard:
 
         if self.leader_score is not None:
             leader_text = font.render(f'Leader Score: {self.leader_score}', True, TEXT_COLOR)
-            screen.blit(leader_text, (20, 20))
+            leader_text_rect = leader_text.get_frect(center=(180, 60))
+            screen.blit(leader_text, leader_text_rect)
+            pygame.draw.rect(screen, TEXT_COLOR, leader_text_rect.inflate(20, 20).move(0, -8), 5, 10)
 
         y_offset = 120
         for index, score in enumerate(self.last_scores):
             score_text = font.render(f'{index + 1}. {score}', True, TEXT_COLOR)
-            screen.blit(score_text, (20, y_offset))
+            screen.blit(score_text, (40, y_offset))
             y_offset += 40
         back_button_rect = self.draw_back_button(screen, font)
         reset_button_rect = self.draw_reset_button(screen, font)

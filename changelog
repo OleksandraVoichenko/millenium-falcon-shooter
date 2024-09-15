@@ -2,3 +2,5 @@
 
 15.09.2024 - Added a scoreboard with "Leader score" (max score from all of the previous games) and list of 10 last played games. 
 Also, added custom "Star Wars" sound effects to the game (while playing, shooting, losing game, and checking scoreboard).
+
+16.09.2024 - Added a "RESET" button to scoreboard that resets all lines in .txt file. Changed audio for "RESET" button.
