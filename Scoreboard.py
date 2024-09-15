@@ -1,4 +1,5 @@
 import pygame
+from PIL.ImageChops import screen
 
 FILE_PATH = './scores.txt'
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
@@ -59,8 +60,9 @@ class Scoreboard:
             screen.blit(score_text, (20, y_offset))
             y_offset += 40
         back_button_rect = self.draw_back_button(screen, font)
+        reset_button_rect = self.draw_reset_button(screen, font)
         pygame.display.flip()
-        return back_button_rect
+        return back_button_rect, reset_button_rect
 
 
     @staticmethod
@@ -71,3 +73,12 @@ class Scoreboard:
         screen.blit(back_surf, back_rect)
         pygame.draw.rect(screen, TEXT_COLOR, back_rect.inflate(20, 20).move(0, -8), 5, 10)
         return back_rect
+
+    @staticmethod
+    def draw_reset_button(screen, font):
+        """Draws RESET button that resets .txt file"""
+        reset_surf = font.render('RESET', True, TEXT_COLOR)
+        reset_rect = reset_surf.get_frect(center=(WINDOW_WIDTH / 2 + 120, WINDOW_HEIGHT - 60))
+        screen.blit(reset_surf, reset_rect)
+        pygame.draw.rect(screen, TEXT_COLOR, reset_rect.inflate(20, 20).move(0, -8), 5, 10)
+        return reset_rect

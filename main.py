@@ -35,6 +35,7 @@ game_music = pygame.mixer.Sound(join('audio', 'star-wars.mp3'))
 game_over_sound = pygame.mixer.Sound(join('audio', 'chewy.wav'))
 laser_sound = pygame.mixer.Sound(join('audio', 'rifle.wav'))
 score_board_sound = pygame.mixer.Sound(join('audio', 'vader.wav'))
+reset_txt_sound = pygame.mixer.Sound(join('audio', 'as_u_wish.wav'))
 game_music.set_volume(0.5)
 game_music.play(loops=-1)
 
@@ -228,7 +229,7 @@ def restart_game():
         sprite.kill()
     for sprite in laser_sprites:
         sprite.kill()
-    game_music.play()
+    game_music.play(loops=-1)
 
 
 def scoreboard_screen():
@@ -243,13 +244,16 @@ def scoreboard_screen():
                 exit()
 
         screen.fill(BACKGROUND_COLOR)
-        back_button_rect = scoreboard.draw_scoreboard(screen, font)
+        back_button_rect, reset_button_rect = scoreboard.draw_scoreboard(screen, font)
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()
         if back_button_rect.collidepoint(mouse_pos) and mouse_click[0]:
             score_board_sound.stop()
             running_scoreboard = False
+        if reset_button_rect.collidepoint(mouse_pos) and mouse_click[0]:
+            reset_txt_sound.play()
+            open(SCORES_FILE, "w").close()
 
         pygame.display.flip()
 
